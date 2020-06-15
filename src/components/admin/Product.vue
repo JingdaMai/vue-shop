@@ -294,8 +294,8 @@ export default {
       this.products[index].data.sizes.push(this.newSize);
       this.newSize = {
         weight: '',
-          name: '',
-          price: ''
+        name: '',
+        price: ''
       };
     }
   }
