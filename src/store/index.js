@@ -10,11 +10,17 @@ export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
     products: {},
-    items: []
+    items: [],
+    customer: {},
+    shipping: {},
+    payment: {}
   },
   getters: {
     getProduct: state => id => state.products[id],
-    totalItems: state => state.items.reduce((acc, curr) => acc + curr.quantity * curr.price, 0)
+    totalItems: state => state.items.reduce((acc, curr) => acc + curr.quantity * curr.price, 0),
+    shippingPrice: (state) => state.shipping.price ? state.shipping.price : 0,
+    paymentPrice: (state) => state.payment.price ? state.payment.price : 0,
+    total: (state, getters) => getters.totalItems + getters.shippingPrice + getters.paymentPrice
   },
   mutations: {
     SET_PRODUCTS(state, products) {
@@ -39,6 +45,20 @@ export default new Vuex.Store({
       if (itemIndex !== -1) {
         state.items.splice(itemIndex, 1);
       }
+    },
+    SET_CUSTOMER(state, customer) {
+      state.customer = customer;
+    },
+    SET_SHIPPING(state, shipping) {
+      state.shipping= shipping;
+    },
+    SET_PAYMENT(state, payment) {
+      state.payment= payment;
+    },
+    CLEAR_CART(state) {
+      state.items = [];
+      state.shipping = {};
+      state.payment = {};
     }
   },
   actions: {
@@ -52,6 +72,17 @@ export default new Vuex.Store({
 
         commit('SET_PRODUCTS', tempProducts);
       })
+    },
+    addOrder({ commit }, state) {
+      db.addOrder({
+        cart: state.items,
+        customer: state.customer,
+        shipping: state.shipping,
+        payment: state.payment
+      })
+        .then(() => {
+          commit('CLEAR_CART');
+        })
     }
   }
 })

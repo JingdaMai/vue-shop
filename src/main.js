@@ -4,9 +4,9 @@ import router from './router';
 import store from './store';
 
 import 'firebase/auth';
-import { FirebaseApp } from "@/library/Database";
+import { FirebaseApp } from "./library/Database";
 
-import { ValidationProvider } from 'vee-validate';
+import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
 
 import 'bulma/css/bulma.css';
@@ -18,6 +18,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 library.add(fas);
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon);
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver);
 
 Vue.filter('price', price => Intl.NumberFormat('en-IN', { style: 'currency', currency: 'JPY' }).format(price))
 
@@ -27,7 +29,6 @@ let baseApp;
 FirebaseApp.auth().onAuthStateChanged(() => {
   if (!baseApp) {
     baseApp = new Vue({
-      ValidationProvider,
       router,
       store,
       created() {

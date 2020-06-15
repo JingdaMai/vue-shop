@@ -17,15 +17,18 @@
         <tr v-for="item in items" :key="item.id + item.size">
           <td>{{ getItem(item.id) }}</td>
           <td>{{ getSize(item.id, item.size) }}</td>
-          <td>
+          <td v-if="!viewOnly">
             <input type="number" min="1" v-model="item.quantity"
               @change="editQuantity(item.id, item.size, $event.target.value)"
               class="input"
             />
           </td>
+          <td v-if="viewOnly">
+            {{ item.quantity }}
+          </td>
           <td>{{ item.price | price }}</td>
           <td>{{ item.price * item.quantity | price }}</td>
-          <td><a @click="removeItem(item.id, item.size)"><FontAwesomeIcon icon="times"/></a></td>
+          <td v-if="!viewOnly"><a @click="removeItem(item.id, item.size)"><FontAwesomeIcon icon="times"/></a></td>
         </tr>
       </tbody>
       <tfoot>
@@ -40,13 +43,19 @@
 
     <p v-if="noItemsError">You haven't selected any products yet.</p>
 
-    <a @click="checkout" class="button is-info">Checkout</a>
+    <a v-if="!viewOnly" @click="checkout" class="button is-info">Checkout</a>
   </section>
 </template>
 
 <script>
 export default {
   name: "Cart",
+  props: {
+    viewOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       noItemsError: false
