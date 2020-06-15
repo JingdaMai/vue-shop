@@ -1,28 +1,35 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <nav class="navbar" role="navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <router-link to="/" class="navbar-item">
+            Jingda Mai's Shop
+          </router-link>
+        </div>
+
+        <div class="navbar-menu">
+          <div class="navbar-end">
+            <router-link to="/cart" class="navbar-item">
+              <FontAwesomeIcon icon="shopping-cart"/>
+              Cart {{ total | price }}
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <router-view />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  computed: {
+    total() {
+      return this.$store.getters.totalItems;
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
