@@ -1,24 +1,14 @@
 # vue-shop
 
-## Project setup
-```
-npm install
-```
+## Demo![demo1](demo1.gif)
+Demo![demo2](demo2.gif)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Using Firebase to store orders and products
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![firebase](C:\Users\datsm\Desktop\my_projects\vue-shop\firebase.png)
+
+## Admin Page to Edit Products
+
+![admin](admin.png)
