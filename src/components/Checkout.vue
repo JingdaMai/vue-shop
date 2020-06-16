@@ -30,7 +30,7 @@
               <label class="label">Address</label>
               <div class="control">
                 <ValidationProvider vid="address" name="address" rules="required" v-slot="{ errors }">
-                  <input v-model="customer.address" class="input" type="text" placeholder="Exmaple address 128/48" />
+                  <input v-model="customer.address" class="input" type="text" placeholder="Home address" />
                   <p class="help is-danger">{{ errors[0] }}</p>
                 </ValidationProvider>
               </div>
@@ -45,7 +45,7 @@
               <label class="label">City</label>
               <div class="control">
                 <ValidationProvider vid="city" name="city" rules="required" v-slot="{ errors }">
-                  <input v-model="customer.city" class="input" type="text" placeholder="XX Town" />
+                  <input v-model="customer.city" class="input" type="text" placeholder="City" />
                   <p class="help is-danger">{{ errors[0] }}</p>
                 </ValidationProvider>
               </div>
@@ -55,7 +55,7 @@
               <label class="label">Postcode</label>
               <div class="control">
                 <ValidationProvider vid="postcode" name="postcode" rules="required" v-slot="{ errors }">
-                  <input v-model="customer.postcode" class="input" type="text" placeholder="XX Town" />
+                  <input v-model="customer.postcode" class="input" type="text" placeholder="Postcode" />
                   <p class="help is-danger">{{ errors[0] }}</p>
                 </ValidationProvider>
               </div>
@@ -64,8 +64,8 @@
             <div class="filed">
               <label class="label">Email Address</label>
               <div class="control">
-                <ValidationProvider vid="email" name="email" rules="required" v-slot="{ errors }">
-                  <input v-model="customer.postcode" class="input" type="email" placeholder="your@email.address" />
+                <ValidationProvider vid="email" name="email" rules="required|email" v-slot="{ errors }">
+                  <input v-model="customer.email" class="input" type="email" placeholder="your@email.address" />
                   <p class="help is-danger">{{ errors[0] }}</p>
                 </ValidationProvider>
               </div>
@@ -79,19 +79,34 @@
               </div>
             </div>
           </form>
-        </ValidationObserver>
 
-        <ValidationObserver v-slot="{ handleSubmit }">
           <form @submit.prevent="handleSubmit(nextStep)" v-if="step === 2" class="columns is-multiline">
+            <div class="column is-one-third">
+              <div class="box">
+                <h2 class="title is-4">Shipping</h2>
+                <div class="control">
+                  <p v-for="(shippingOption, index) in shippingOptions" :key="index">
+                    <ValidationProvider vid="shipping" name="shipping" rules="required|excluded:-1" v-slot="{ errors }">
+                      <label class="radio">
+                        <input v-model="shipping" type="radio" :value="index">
+                        {{ shippingOption.name }} (+{{ shippingOption.price }} JPY)
+                      </label>
+                      <span>{{ errors[0]}}</span>
+                    </ValidationProvider>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div class="column is-one-third">
               <div class="box">
                 <h2 class="title is-4">Payment</h2>
                 <div class="control">
                   <p v-for="(paymentOption, index) in paymentOptions" :key="index">
-                    <ValidationProvider vid="payment" name="payment" rules="required" v-slot="{ errors }">
-                      <label class="label">
+                    <ValidationProvider vid="payment" name="payment" rules="required|excluded:-1'" v-slot="{ errors }">
+                      <label class="radio">
                         <input v-model="payment" type="radio" :value="index">
-                        {{ paymentOption.name }} (+{{ paymentOption.price | price }})
+                        {{ paymentOption.name }}
                       </label>
                       <span>{{ errors[0]}}</span>
                     </ValidationProvider>
@@ -106,7 +121,7 @@
                   Total
                 </h2>
                 <p>
-                  Cart: {{ totoalItems | price }}
+                  Cart: {{ totalItems | price }}
                 </p>
                 <p>Incl. shipping and payment: {{ total | price }}</p>
               </div>
@@ -115,15 +130,13 @@
             <div class="field is-grouped column is-12">
               <div class="control">
                 <button type="submit" class="button is-link">
-                  Continue to conformation
+                  Continue to confirmation
                 </button>
               </div>
             </div>
 
           </form>
-        </ValidationObserver>
 
-        <ValidationObserver v-slot="{ handleSubmit }">
           <form @submit.prevent="handleSubmit(checkout)" v-if="step === 3" class="column is-multiline">
             <Cart view-only />
             <div class="column is-one-third">
@@ -152,6 +165,7 @@
           </form>
         </ValidationObserver>
 
+
         <div v-if="step === 4">
           <h1 class="title">Thank you for your order!</h1>
         </div>
@@ -162,8 +176,8 @@
 </template>
 
 <script>
-import CountrySelect from "./CountrySelect";
-import Cart from "./Cart";
+import CountrySelect from './CountrySelect';
+import Cart from './Cart';
 
 export default {
   name: "Checkout",
@@ -213,7 +227,7 @@ export default {
     },
     payment: {
       get() {
-        return this.shippingOptions.findIndex(s => s.name === this.$store.state.payment.name);
+        return this.paymentOptions.findIndex(s => s.name === this.$store.state.payment.name);
       },
       set(value) {
         this.$store.commit('SET_PAYMENT', this.paymentOptions[value]);
@@ -240,7 +254,8 @@ export default {
     },
     checkout() {
       this.$store.dispatch('addOrder')
-        .then(() => this.step = 4);
+        .then(() => this.step = 4)
+        .catch(console.log);
     }
   }
 }

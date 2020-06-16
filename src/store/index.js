@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 
-import db from '@/library/Database';
+import db from '../library/Database';
 
 Vue.use(Vuex);
 
@@ -20,14 +20,14 @@ export default new Vuex.Store({
     totalItems: state => state.items.reduce((acc, curr) => acc + curr.quantity * curr.price, 0),
     shippingPrice: (state) => state.shipping.price ? state.shipping.price : 0,
     paymentPrice: (state) => state.payment.price ? state.payment.price : 0,
-    total: (state, getters) => getters.totalItems + getters.shippingPrice + getters.paymentPrice
+    total: (_state, getters) => getters.totalItems + getters.shippingPrice + getters.paymentPrice
   },
   mutations: {
     SET_PRODUCTS(state, products) {
       state.products = products;
     },
     ADD_ITEM(state, {id, size, price, quantity}) {
-      let itemIndex = state.items.findIndex(i => i.id === id && i.size ===size);
+      const itemIndex = state.items.findIndex(i => i.id === id && i.size === size);
       if (itemIndex !== -1) {
         state.items[itemIndex].quantity += quantity;
       } else {
@@ -35,13 +35,13 @@ export default new Vuex.Store({
       }
     },
     SET_ITEM_QUANTITY(state, { id, size, quantity }) {
-      let itemIndex = state.items.findIndex(i => i.id === id && i.size ===size);
+      const itemIndex = state.items.findIndex(i => i.id === id && i.size === size);
       if (itemIndex !== -1) {
         state.items[itemIndex].quantity = quantity;
       }
     },
     REMOVE_ITEM (state, { id, size }) {
-      let itemIndex = state.items.findIndex(i => i.id === id && i.size ===size);
+      const itemIndex = state.items.findIndex(i => i.id === id && i.size === size);
       if (itemIndex !== -1) {
         state.items.splice(itemIndex, 1);
       }
@@ -73,7 +73,7 @@ export default new Vuex.Store({
         commit('SET_PRODUCTS', tempProducts);
       })
     },
-    addOrder({ commit }, state) {
+    addOrder({ commit, state }) {
       db.addOrder({
         cart: state.items,
         customer: state.customer,
@@ -83,6 +83,7 @@ export default new Vuex.Store({
         .then(() => {
           commit('CLEAR_CART');
         })
+        .catch(console.log)
     }
   }
 })

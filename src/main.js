@@ -8,6 +8,16 @@ import { FirebaseApp } from "./library/Database";
 
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 
+import { extend } from 'vee-validate';
+import { required, email, excluded } from 'vee-validate/dist/rules';
+
+extend('email', email);
+extend('excluded', excluded);
+
+extend('required', {
+  ...required,
+  message: 'This field is required'
+});
 
 import 'bulma/css/bulma.css';
 
