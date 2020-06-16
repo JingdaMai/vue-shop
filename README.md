@@ -1,10 +1,11 @@
 # vue-shop
 
 ## Demo
-![demo1](demo1.gif)
-![demo2](demo2.gif)
+![demo1](./images/demo1.gif)
+![demo2](./images/demo2.gif)
+
 ## Using Firebase to store orders and products
-![firebase](firebase.png)
+![firebase](./images/firebase.png)
 ## Admin Page to Edit Products
 
-![admin](admin.png)
+![admin](./images/admin.png)
